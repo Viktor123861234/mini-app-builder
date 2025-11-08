@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini App Builder</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 2rem;
+    background: #f0f0f0;
+    color: #333;
+  }
+
+  h1, h2 {
+    text-align: center;
+  }
+
+  .app-selector, .app-container {
+    margin: 2rem auto;
+    max-width: 600px;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  button {
+    padding: 0.5rem 1rem;
+    margin: 0.5rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background: #3498db;
+    color: white;
+  }
+
+  button:hover {
+    background: #2980b9;
+  }
+
+  input[type="text"], input[type="number"] {
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .output {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #ecf0f1;
+    border-radius: 5px;
+    text-align: center;
+    min-height: 40px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Mini App Builder</h1>
+
+<div class="app-selector">
+  <h2>Select App</h2>
+  <button data-app="calculator">Calculator</button>
+  <button data-app="timer">Timer</button>
+  <button data-app="meme">Meme Generator</button>
+</div>
+
+<div class="app-container" id="app-container">
+  <p>Select an app to start</p>
+</div>
+
+<script>
+const appContainer = document.getElementById('app-container');
+
+document.querySelectorAll('.app-selector button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const app = btn.dataset.app;
+    appContainer.innerHTML = ''; // clear container
+    if(app === 'calculator') loadCalculator();
+    else if(app === 'timer') loadTimer();
+    else if(app === 'meme') loadMeme();
+  });
+});
+
+// Calculator
+function loadCalculator() {
+  appContainer.innerHTML = `
+    <h2>Calculator</h2>
+    <input type="number" id="num1" placeholder="Number 1">
+    <input type="number" id="num2" placeholder="Number 2">
+    <div>
+      <button id="add">+</button>
+      <button id="sub">-</button>
+      <button id="mul">*</button>
+      <button id="div">/</button>
+    </div>
+    <div class="output" id="calc-output"></div>
+  `;
+
+  const output = document.getElementById('calc-output');
+  document.getElementById('add').onclick = () => calc('+', output);
+  document.getElementById('sub').onclick = () => calc('-', output);
+  document.getElementById('mul').onclick = () => calc('*', output);
+  document.getElementById('div').onclick = () => calc('/', output);
+
+  function calc(op, output) {
+    const n1 = parseFloat(document.getElementById('num1').value);
+    const n2 = parseFloat(document.getElementById('num2').value);
+    let result;
+    if(op === '+') result = n1 + n2;
+    if(op === '-') result = n1 - n2;
+    if(op === '*') result = n1 * n2;
+    if(op === '/') result = n2 !== 0 ? n1 / n2 : 'Error';
+    output.textContent = result;
+  }
+}
+
+// Timer
+function loadTimer() {
+  appContainer.innerHTML = `
+    <h2>Timer</h2>
+    <input type="number" id="seconds" placeholder="Seconds">
+    <button id="start-timer">Start</button>
+    <div class="output" id="timer-output"></div>
+  `;
+  const output = document.getElementById('timer-output');
+  let timer;
+  document.getElementById('start-timer').onclick = () => {
+    clearInterval(timer);
+    let sec = parseInt(document.getElementById('seconds').value);
+    output.textContent = sec;
+    timer = setInterval(() => {
+      sec--;
+      output.textContent = sec;
+      if(sec <= 0) clearInterval(timer);
+    }, 1000);
+  };
+}
+
+// Meme Generator
+function loadMeme() {
+  appContainer.innerHTML = `
+    <h2>Meme Generator</h2>
+    <input type="text" id="top-text" placeholder="Top text">
+    <input type="text" id="bottom-text" placeholder="Bottom text">
+    <button id="generate-meme">Generate</button>
+    <div class="output" id="meme-output" style="position: relative; display: inline-block;">
+  <img id="meme-img" src="https://i.imgflip.com/1bij.jpg" alt="Meme" style="max-width:100%;border-radius:5px;">
+  <div id="meme-top" style="
+    position: absolute;
+    top: 10px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 5px black;
+    font-size: 24px;
+  "></div>
+  <div id="meme-bottom" style="
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 5px black;
+    font-size: 24px;
+  "></div>
+</div>
+
+  `;
+
+  document.getElementById('generate-meme').onclick = () => {
+    document.getElementById('meme-top').textContent = document.getElementById('top-text').value;
+    document.getElementById('meme-bottom').textContent = document.getElementById('bottom-text').value;
+  };
+}
+</script>
+
+</body>
+</html>
